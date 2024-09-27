@@ -87,7 +87,9 @@ func (c BlockChain) MineBlock(payload Payload) Block {
 			shortHash := payloadHash[0:12]
 			mineTime := endTime - startTime
 
-			fmt.Printf("Mined block %d in %d milliseconds. Hash: %s (%d attempts)\n", payload.Sequence, mineTime, shortHash, nonce)
+			if VERBOSE {
+				fmt.Printf("Mined block %d in %d milliseconds. Hash: %s (%d attempts)\n", payload.Sequence, mineTime, shortHash, nonce)
+			}
 
 			header := Header{
 				Nonce: nonce,
@@ -105,7 +107,9 @@ func (c BlockChain) MineBlock(payload Payload) Block {
 func (c *BlockChain) PushBlock(block Block) {
 	if c.verifyBlock(block) {
 		c.Chain = append(c.Chain, block)
-		fmt.Printf("Pushed block %d sequence %s hash\n", block.Payload.Sequence, block.Header.Hash)
+		if VERBOSE {
+			fmt.Printf("Pushed block %d sequence %s hash\n", block.Payload.Sequence, block.Header.Hash)
+		}
 	}
 }
 
@@ -139,5 +143,8 @@ func (c BlockChain) Hash(data string) string {
 
 func (c BlockChain) IsHashProofed(hash string) bool {
 	check := strings.Repeat(c.prefix, c.difficulty)
+	if VERBOSE {
+		fmt.Printf("Checking hash: %s\n", hash[0:12])
+	}
 	return strings.HasPrefix(hash, check)
 }
